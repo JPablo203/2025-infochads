@@ -11,6 +11,24 @@ Class {
 	#package : 'IngSoft2-Model'
 }
 
+{ #category : 'as yet unclassified' }
+Card >> affectsMovement [
+
+	^ false
+]
+
+{ #category : 'as yet unclassified' }
+Card >> applyTo: aGame from: aShip applyTo: aTarget [
+
+	self subclassResponsibility
+]
+
+{ #category : 'testing' }
+Card >> canBePlayedAtAnyMoment [
+
+	^ false
+]
+
 { #category : 'accessing' }
 Card >> isApplicable [
 

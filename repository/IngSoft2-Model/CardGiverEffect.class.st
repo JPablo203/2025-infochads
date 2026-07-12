@@ -1,6 +1,6 @@
 Class {
 	#name : 'CardGiverEffect',
-	#superclass : 'NoEffect',
+	#superclass : 'Effect',
 	#instVars : [
 		'cardDeck'
 	],

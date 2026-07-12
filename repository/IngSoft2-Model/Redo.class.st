@@ -8,24 +8,20 @@ Class {
 	#package : 'IngSoft2-Model'
 }
 
-{ #category : 'accessing' }
-Redo >> getLastCardEffect [
+{ #category : 'as yet unclassified' }
+Redo >> applyTo: aGame from: aShip applyTo: aTarget [
 
-	^ lastCardEffect
+	aGame applyLastCardEffectFrom: aShip to: aTarget
 ]
 
 { #category : 'testing' }
-Redo >> isRedo [
+Redo >> canBePlayedAtAnyMoment [
 
 	^ true
 ]
 
-{ #category : 'as yet unclassified' }
-Redo >> resolveCardWith: aPreviousCard [
+{ #category : 'accessing' }
+Redo >> getLastCardEffect [
 
-	| resolved |
-	resolved := aPreviousCard.
-	[ resolved isRedo ] whileTrue: [ resolved := resolved getLastCardEffect ].
-	lastCardEffect := resolved.
-	^ self
+	^ lastCardEffect
 ]
