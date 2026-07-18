@@ -1,36 +1,11 @@
 Class {
 	#name : 'NoEffect',
-	#superclass : 'Object',
+	#superclass : 'Effect',
 	#category : 'IngSoft2-Model',
 	#package : 'IngSoft2-Model'
 }
 
 { #category : 'as yet unclassified' }
-NoEffect >> applyToAllSpaceShips: aPosition [
-
-	^ Position at: aPosition withLaps: 0
-]
-
-{ #category : 'as yet unclassified' }
-NoEffect >> applyToSpaceShip: aPosition [
-
-	^ Position at: aPosition withLaps: 0
-]
-
-{ #category : 'as yet unclassified' }
-NoEffect >> damageAllShields [
-
-	^ false
-]
-
-{ #category : 'as yet unclassified' }
-NoEffect >> damageShield [
-
-	^ false
-]
-
-{ #category : 'as yet unclassified' }
-NoEffect >> giveCardToShip [
-
-	^ self
+NoEffect >> takeActionOver: aSpaceShip or: spaceShips thatArePlaced: spaceShipPositions [
+	"No hace nada porque es un casillero sin efecto"
 ]

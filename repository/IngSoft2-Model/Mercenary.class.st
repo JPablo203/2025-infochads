@@ -1,12 +1,18 @@
 Class {
 	#name : 'Mercenary',
-	#superclass : 'PermanentCard',
+	#superclass : 'Card',
 	#instVars : [
 		'ally'
 	],
 	#category : 'IngSoft2-Model',
 	#package : 'IngSoft2-Model'
 }
+
+{ #category : 'as yet unclassified' }
+Mercenary >> applyTo: aGame from: aShip applyTo: aTarget [
+
+	aGame addPermanentEffect: self to: aTarget
+]
 
 { #category : 'as yet unclassified' }
 Mercenary >> getAlly [

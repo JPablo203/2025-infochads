@@ -1,5 +1,5 @@
 Class {
-	#name : 'CellPlacement',
+	#name : 'GameMapCreator',
 	#superclass : 'Object',
 	#instVars : [
 		'boardSize',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'adding' }
-CellPlacement >> addNormalCellAtBeguiningAndEndOfBoard: netCellDistibution [
+GameMapCreator >> addNormalCellAtBeguiningAndEndOfBoard: netCellDistibution [
 
 	| safeCell |
 	safeCell := Cell has: NoEffect new.
@@ -20,7 +20,7 @@ CellPlacement >> addNormalCellAtBeguiningAndEndOfBoard: netCellDistibution [
 ]
 
 { #category : 'creation' }
-CellPlacement >> atomicBombCellsWithPercentage: aPercentage and: aDesplacement [
+GameMapCreator >> atomicBombCellsWithPercentage: aPercentage and: aDesplacement [
 
 	| newCells |
 	newCells := (1 to: aPercentage) collect: [ :cell |
@@ -30,7 +30,7 @@ CellPlacement >> atomicBombCellsWithPercentage: aPercentage and: aDesplacement [
 ]
 
 { #category : 'creation' }
-CellPlacement >> blackHoleCellsWithPercentage: aPercentage andDesplacemets: aDesplacement [
+GameMapCreator >> blackHoleCellsWith: aPercentage and: aDesplacement [
 
 	| newCells |
 	newCells := (1 to: aPercentage) collect: [ :cell |
@@ -40,7 +40,7 @@ CellPlacement >> blackHoleCellsWithPercentage: aPercentage andDesplacemets: aDes
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> calculateConversion: aParsecValue and: aLightYear [
+GameMapCreator >> calculateConversion: aParsecValue and: aLightYear [
 
 	| result |
 	result := aParsecValue + aLightYear.
@@ -52,14 +52,14 @@ CellPlacement >> calculateConversion: aParsecValue and: aLightYear [
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> cardGiverWithPercentage: aPercentage [
+GameMapCreator >> cardGiverWithPercentage: aPercentage and: aCardDeck [
 
 	1 to: aPercentage do: [ :cell |
-	rawCellDistribution add: (Cell has: (CardGiverEffect with: CardDeck new)) ]
+	rawCellDistribution add: (Cell has: (CardGiverEffect with: aCardDeck )) ]
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> createBoardWithCellConfiguration: aConfigDice andSize: aBoardSize [
+GameMapCreator >> createBoardWithCellConfiguration: aConfigDice andSize: aBoardSize [
 
 	boardSize := aBoardSize.
 	rawCellDistribution := OrderedCollection new.
@@ -69,7 +69,7 @@ CellPlacement >> createBoardWithCellConfiguration: aConfigDice andSize: aBoardSi
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> extractSample [
+GameMapCreator >> extractSample [
 
 	| netCellDistibution |
 	
@@ -79,14 +79,14 @@ CellPlacement >> extractSample [
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> generateUniverse: aConfigDice [
+GameMapCreator >> generateUniverse: aConfigDice [
 
-	| probabilities |
+	| probabilities aSharedDeck |
 	probabilities := self obtainProbabilities: aConfigDice.
 	self theProbabilitiesMustSum100: probabilities.
 	
 	self normalCellsWithPercentage: (probabilities at: 1).
-	self blackHoleCellsWithPercentage: (probabilities at: 2) andDesplacemets: 4.
+	self blackHoleCellsWith: (probabilities at: 2) and: 4.
 	self
 		hyperSpaceJumpCellsWithPercantage: (probabilities at: 3)
 		andDesplacements: 4.
@@ -98,14 +98,14 @@ CellPlacement >> generateUniverse: aConfigDice [
 		
 	self atomicBombCellsWithPercentage: (probabilities at: 5) and: 0.
 	self moonWalkCellsWithPercentage: (probabilities at: 6) andDisplacements: aConfigDice.
-		
-	self cardGiverWithPercentage: (probabilities at: 7). 
+	aSharedDeck := CardDeck new. 
+	self cardGiverWithPercentage: (probabilities at: 7) and: aSharedDeck. 
 
 
 ]
 
 { #category : 'creation' }
-CellPlacement >> hyperJumpCellsWithPercentage: aPercentage andParsecValue: aParsecValue andLightYear: aLightYear andJumpList: aConfigDice [
+GameMapCreator >> hyperJumpCellsWithPercentage: aPercentage andParsecValue: aParsecValue andLightYear: aLightYear andJumpList: aConfigDice [
 
 	| jumps amountOfJumps newCells conversion |
 	amountOfJumps := aConfigDice toss.
@@ -124,7 +124,7 @@ CellPlacement >> hyperJumpCellsWithPercentage: aPercentage andParsecValue: aPars
 ]
 
 { #category : 'creation' }
-CellPlacement >> hyperSpaceJumpCellsWithPercantage: aPercentage andDesplacements: aDesplacement [ 
+GameMapCreator >> hyperSpaceJumpCellsWithPercantage: aPercentage andDesplacements: aDesplacement [ 
 
 	| newCells |
 	newCells := (1 to: aPercentage) collect: [ :cell |
@@ -134,7 +134,7 @@ CellPlacement >> hyperSpaceJumpCellsWithPercantage: aPercentage andDesplacements
 ]
 
 { #category : 'creation' }
-CellPlacement >> moonWalkCellsWithPercentage: aPercentage andDisplacements: aConfigDice [
+GameMapCreator >> moonWalkCellsWithPercentage: aPercentage andDisplacements: aConfigDice [
 
 	| newCells stepBackwards allDisplacements repeat |
 	stepBackwards := self obtainNextDisplacement: aConfigDice.
@@ -151,14 +151,14 @@ CellPlacement >> moonWalkCellsWithPercentage: aPercentage andDisplacements: aCon
 ]
 
 { #category : 'creation' }
-CellPlacement >> normalCellsWithPercentage: aPercentage [
+GameMapCreator >> normalCellsWithPercentage: aPercentage [
 
 	1 to: aPercentage do: [ :cell |
 	rawCellDistribution add: (Cell has: NoEffect new) ]
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> obtainNextDisplacement: aConfigDice [
+GameMapCreator >> obtainNextDisplacement: aConfigDice [
 
 	| results throw |
 	results := OrderedCollection new.
@@ -171,20 +171,20 @@ CellPlacement >> obtainNextDisplacement: aConfigDice [
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> obtainProbabilities: aConfigureDice [
+GameMapCreator >> obtainProbabilities: aConfigureDice [
 
 	^ (1 to: 7) collect: [ :effect | aConfigureDice toss ]
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> randomCellPicking [
+GameMapCreator >> randomCellPicking [
 
     ^ (1 to: boardSize) collect: [ :cell |
           rawCellDistribution at: ((1 to: 100) atRandom) ]
 ]
 
 { #category : 'as yet unclassified' }
-CellPlacement >> theProbabilitiesMustSum100: percentajes [
+GameMapCreator >> theProbabilitiesMustSum100: percentajes [
 
 	(percentajes sum: [ :proba | proba ]) = 100 ifFalse: [
 		Error signal: 'The probabilites dont sum 100.' ]

@@ -1,6 +1,6 @@
 Class {
 	#name : 'BlackHoleEffect',
-	#superclass : 'NoEffect',
+	#superclass : 'Effect',
 	#instVars : [
 		'desplacement'
 	],

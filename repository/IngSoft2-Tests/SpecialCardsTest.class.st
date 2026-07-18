@@ -24,23 +24,23 @@ SpecialCardsTest >> testWhenACancellationCardIsAppliedThenAShipLosesAnEffect [
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	cancellationCard := Cancellation new.
+	accelerationCard := Acceleration new.
+	cancellationCard effectTypeToCancel: accelerationCard.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 1
 		         throwing: aDiceSet
 		         wonAfter: 1
-		         withDeck: { }.
+		         withDeck: { cancellationCard. accelerationCard }.
 
-
-	cancellationCard := Cancellation new.
-	accelerationCard := Acceleration new.
-	cancellationCard effectTypeToCancel: accelerationCard.
-	aGame applyEffect: accelerationCard to: 0.
-	aGame applyEffect: cancellationCard to: 1.
+	aGame useCard: accelerationCard from: 1 applyTo: 1.
+	aGame useCard: cancellationCard from: 1 applyTo: 1.
 
 	aGame start.
 
-	self assert: (aGame positionOf: 1) equals: 2
+	self assert: (aGame positionOf: 1) equals: 2.
+	self assert: (aGame getCardDeckSizeOf: 1) equals:0
 ]
 
 { #category : 'tests' }
@@ -52,23 +52,27 @@ SpecialCardsTest >> testWhenAShipWithMercenaryLosesBothLoseShield [
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	mercenaryCard := Mercenary new.
 	aGame := Game
 		         playedIn: aBoard
-		         by: 4 
+		         by: 4
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+		         withDeck: {
+				         mercenaryCard.
+				         mercenaryCard.
+				         mercenaryCard.
+				         mercenaryCard }.
 
-	mercenaryCard := Mercenary new.
-	aGame applyEffect: mercenaryCard to: 1.
+	aGame useCard: mercenaryCard from: 1 applyTo: 1.
 	aGame chooseMercenary: 3 for: 1.
-	aGame applyEffect: mercenaryCard to: 2.
+	aGame useCard: mercenaryCard from: 2 applyTo: 2.
 	aGame chooseMercenary: 4 for: 2.
 	aGame start.
 
 	self assert: (aGame shieldOf: 2) equals: 3.
 	self assert: (aGame shieldOf: 1) equals: 2.
-	self assert: (aGame shieldOf: 3) equals: 2.
+	self assert: (aGame shieldOf: 3) equals: 2
 ]
 
 { #category : 'tests' }
@@ -80,20 +84,20 @@ SpecialCardsTest >> testWhenASpaceShipHas2MercenariesAndLosesThenBothMercenaries
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	mercenaryCard := Mercenary new.
+	mercenaryCard1 := Mercenary new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 5
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {mercenaryCard. mercenaryCard1. mercenaryCard1}.
 
-	mercenaryCard := Mercenary new.
-	mercenaryCard1 := Mercenary new.
-	aGame applyEffect: mercenaryCard to: 1.
+	aGame useCard: mercenaryCard from: 1 applyTo: 1.
 	aGame chooseMercenary: 3 for: 1.
-	aGame applyEffect: mercenaryCard1 to: 1.
+	aGame useCard: mercenaryCard1 from: 1 applyTo: 1.
 	aGame chooseMercenary: 5 for: 1.
-	aGame applyEffect: mercenaryCard to: 2.
+	aGame useCard: mercenaryCard from: 2 applyTo: 2.
 	aGame chooseMercenary: 4 for: 2.
 	aGame start.
 
@@ -112,22 +116,22 @@ SpecialCardsTest >> testWhenBothShipsHave2MercenariesInABattleAnd1LosesThenLoses
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	mercenaryCard := Mercenary new.
+	mercenaryCard1 := Mercenary new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 6
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {mercenaryCard. mercenaryCard1. mercenaryCard. mercenaryCard1. }.
 
-	mercenaryCard := Mercenary new.
-	mercenaryCard1 := Mercenary new.
-	aGame applyEffect: mercenaryCard to: 1.
+	aGame useCard: mercenaryCard from: 1 applyTo: 1.
 	aGame chooseMercenary: 3 for: 1.
-	aGame applyEffect: mercenaryCard1 to: 1.
+	aGame useCard: mercenaryCard1 from: 1 applyTo: 1.
 	aGame chooseMercenary: 5 for: 1.
-	aGame applyEffect: mercenaryCard to: 2.
+	aGame useCard: mercenaryCard from: 2 applyTo: 2.
 	aGame chooseMercenary: 4 for: 2.
-	aGame applyEffect: mercenaryCard1 to: 2.
+	aGame useCard: mercenaryCard1 from: 2 applyTo: 2.
 	aGame chooseMercenary: 6 for: 2.
 	aGame start.
 
@@ -149,15 +153,15 @@ SpecialCardsTest >> testWhenRepeatCardIsUsedOnSpaceshipAnTheEffectToRepeatIsAtom
 		          withSize: 50
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: aConfigureDiceSet.
+	repeatCard := Repeat new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 2
 		         throwing: aDiceSet
 		         wonAfter: 3
-					withDeck: { }.
-	repeatCard := Repeat new.
+					withDeck: {repeatCard }.
 	aGame start.
-	aGame applyEffect: repeatCard to: 1.
+	aGame useCard: repeatCard from: 1 applyTo: 1.
 	self assert: (aGame positionOf: 1) equals: 0.
 	self assert: (aGame shieldOf: 1) equals: 1.
 	self assert: (aGame positionOf: 2) equals: 0.
@@ -170,21 +174,21 @@ SpecialCardsTest >> testWhenRepeatCardIsUsedOnSpaceshipAnTheEffectToRepeatIsBlac
 	| aGame aDiceSet aBoard aConfigureDiceSet repeatCard |
 	aDiceSet := RiggedDice new initializeWith: { 20 }.
 	aConfigureDiceSet := RiggedDice new initializeWith:
-		                     { 0. 100. 0. 0. 0. 0. 0. 100. 0. 3. 30. 20. 10. 6. 4.
-		                     2. 5. 7 }.
+		                     { 0. 100. 0. 0. 0. 0. 0. 100. 0. 3. 30. 20. 10.
+		                     6. 4. 2. 5. 7 }.
 	aBoard := Board
 		          withSize: 50
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: aConfigureDiceSet.
+	repeatCard := Repeat new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 1
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
-	repeatCard := Repeat new.
+		         withDeck: { repeatCard }.
 	aGame start.
-	aGame applyEffect: repeatCard to: 1.
+	aGame useCard: repeatCard from: 1 applyTo: 1.
 	self assert: (aGame positionOf: 1) equals: 13
 ]
 
@@ -197,19 +201,20 @@ SpecialCardsTest >> testWhenShipUses2RedoCardsThatTransformsIntoASpeedCardDueToB
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	speedCard := Speed new.
+	redoCard := Redo new.
+	redoCard1 := Redo new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 1
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {speedCard. redoCard. redoCard1 }.
 
-	speedCard := Speed new.
-	redoCard := Redo new.
-	redoCard1 := Redo new.
-	aGame applyEffect: speedCard to: 1.
-	aGame applyEffect: redoCard to: 1.	
-	aGame applyEffect: redoCard1 to: 1.	
+	aGame useCard: speedCard from: 1 applyTo: 1.
+	aGame useCard: redoCard from: 1 applyTo: 1.
+	aGame drawCardFor: 1.
+	aGame useCard: redoCard1 from: 1 applyTo: 1.	
 	aGame start.
 
 	self assert: (aGame positionOf:1) equals: 5
@@ -224,17 +229,17 @@ SpecialCardsTest >> testWhenShipUsesARedoCardThatTransformsIntoASpeedCardDueToBe
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	speedCard := Speed new.
+	redoCard := Redo new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 1
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
-
-	speedCard := Speed new.
-	redoCard := Redo new.
-	aGame applyEffect: speedCard to: 1.
-	aGame applyEffect: redoCard to: 1.	
+					withDeck: {speedCard. redoCard }.
+					
+	aGame useCard: speedCard from: 1 applyTo: 1.
+	aGame useCard: redoCard from: 1 applyTo: 1.	
 	aGame start.
 
 	self assert: (aGame positionOf:1) equals:4
@@ -249,15 +254,15 @@ SpecialCardsTest >> testWhenSpaceShip1HasMercenaryCardAndWinsBattleAgainst2 [
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	mercenaryCard := Mercenary new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 3
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {mercenaryCard }.
 
-	mercenaryCard := Mercenary new.
-	aGame applyEffect: mercenaryCard to: 1.
+	aGame useCard: mercenaryCard from: 1 applyTo: 1.
 	aGame chooseMercenary: 3 for: 1.
 	aGame start.
 
@@ -274,17 +279,17 @@ SpecialCardsTest >> testWhenSpaceShip2And1HasMercenaryCardAnd2WinsBattleAgainst1
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	mercenaryCard := Mercenary new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 4
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {mercenaryCard. mercenaryCard. mercenaryCard. mercenaryCard}.
 
-	mercenaryCard := Mercenary new.
-	aGame applyEffect: mercenaryCard to: 1.
+	aGame useCard: mercenaryCard from: 1 applyTo: 1.
 	aGame chooseMercenary: 3 for: 1.
-	aGame applyEffect: mercenaryCard to: 2.
+	aGame useCard: mercenaryCard from: 2 applyTo: 2.
 	aGame chooseMercenary: 4 for: 2.
 	aGame start.
 
@@ -301,15 +306,15 @@ SpecialCardsTest >> testWhenSpaceShipHasASpeedCardEffectAppliedThenMovesAnExtraP
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	speedCard := Speed new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 1
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {speedCard }.
 
-	speedCard := Speed new.
-	aGame applyEffect: speedCard to: 1.
+	aGame useCard: speedCard from: 1 applyTo: 1.
 	aGame start.
 
 	self assert: (aGame positionOf: 1) equals: 3
@@ -324,15 +329,15 @@ SpecialCardsTest >> testWhenSpaceShipHasAnAccelerationCardEffectThenMovesAnExtra
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	accelerationCard := Acceleration new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 2
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {accelerationCard }.
 
-	accelerationCard := Acceleration new.
-	aGame applyEffect: accelerationCard to: 0.
+	aGame useCard: accelerationCard from: 1 applyTo: 1.
 	aGame start.
 
 	self assert: (aGame positionOf: 1) equals: 3
@@ -347,16 +352,16 @@ SpecialCardsTest >> testWhenSpaceShipHasMoreThan1SpeedEffectThenMovesExtraPositi
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	speedCard := Speed new.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 1
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
+					withDeck: {speedCard. speedCard}.
 
-	speedCard := Speed new.
-	aGame applyEffect: speedCard to: 1.
-	aGame applyEffect: speedCard to: 1.	
+	aGame useCard: speedCard from: 1 applyTo: 1.
+	aGame useCard: speedCard from: 1 applyTo: 1.
 	aGame start.
 
 	self assert: (aGame positionOf:1) equals:4
@@ -371,19 +376,18 @@ SpecialCardsTest >> testWhenSpaceShipHasNoPermanentEffectActiveTriesUsingCancell
 		          withSize: 100
 		          composedOf: (WormHole startingAt: 1 endingAt: 1)
 		          andACellConfiguration: {  }.
+	cancellationCard := Cancellation new.
+	accelerationCard := Acceleration new.
+	cancellationCard effectTypeToCancel: accelerationCard.
 	aGame := Game
 		         playedIn: aBoard
 		         by: 1
 		         throwing: aDiceSet
 		         wonAfter: 1
-					withDeck: { }.
-
-	cancellationCard := Cancellation new.
-	accelerationCard := Acceleration new.
-	cancellationCard effectTypeToCancel: accelerationCard.
+					withDeck: {cancellationCard.accelerationCard }.
 
 	self
-		should: [ aGame applyEffect: cancellationCard to: 1 ]
+		should: [ aGame useCard: cancellationCard from: 1 applyTo: 1. ]
 		raise: Error
 		withMessageText:
 		'There is no Permanent effect active, Cancelleation Card not Used.'

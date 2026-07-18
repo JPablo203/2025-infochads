@@ -29,35 +29,24 @@ Board class >> withSize: aBoardSize composedOf: aWormHole andACellConfiguration:
 ]
 
 { #category : 'as yet unclassified' }
-Board >> adjust: spaceShips positionAnd: totalLaps [
-
-	spaceShips do: [ :ship |
-		ship storeageNewPosition:
-			(self limitAdjustment: ship position withTotalLaps: totalLaps) ]
-]
-
-{ #category : 'as yet unclassified' }
 Board >> applyEffecOfPowerUpUponA: aSpaceShip andAll: spaceShips andIts: spaceShipPositions [
 
 	| cell |
-	gameBoard ifNotEmpty: [
-		cell := gameBoard at:
-			        (spaceShipPositions at: aSpaceShip id) position.
-		self lastAppliedEffect: cell.
-		cell
-			takeActionOver: aSpaceShip
-			or: spaceShips
-			thatArePlaced: spaceShipPositions ]
+	cell := gameBoard at: (spaceShipPositions at: aSpaceShip id) position.
+	self lastAppliedEffect: cell.
+	cell
+		takeActionOver: aSpaceShip
+		or: spaceShips
+		thatArePlaced: spaceShipPositions
 ]
 
 { #category : 'as yet unclassified' }
 Board >> applyLastEffectPowerUpUponA: aSpaceShip andAll: spaceShips andIts: spaceShipPositions [
 
-	gameBoard ifNotEmpty: [
-		lastEffectApplied
-			takeActionOver: aSpaceShip
-			or: spaceShips
-			thatArePlaced: spaceShipPositions ]
+	lastEffectApplied
+		takeActionOver: aSpaceShip
+		or: spaceShips
+		thatArePlaced: spaceShipPositions
 ]
 
 { #category : 'accessing' }
@@ -66,24 +55,21 @@ Board >> boardSize [
 	^ boardSize
 ]
 
-{ #category : 'as yet unclassified' }
-Board >> checkForWormHole: aPosition [
-
-	^ Position at: (wormHole moveifWormHole: aPosition position) withLaps: 0.
-]
-
 { #category : 'initialization' }
 Board >> initializeWithSize: aBoardSize composedOf: aWormHole andConfiguration: aConfigDiceSet [
 
 	boardSize := aBoardSize.
 
-	gameBoard := CellPlacement new
+	gameBoard := GameMapCreator new
 		             createBoardWithCellConfiguration: aConfigDiceSet
 		             andSize: boardSize.
+	gameBoard := gameBoard isEmpty
+		             ifTrue: [
+		             (1 to: boardSize) collect: [ :each | NoEffect new ] ]
+		             ifFalse: [ gameBoard ].
 
 	wormHole := aWormHole.
-	wormHole mustBeWithInLimits: aBoardSize.
-
+	wormHole mustBeWithInLimits: aBoardSize
 ]
 
 { #category : 'accessing' }
@@ -93,7 +79,7 @@ Board >> lastAppliedEffect: aCellEffect [
 ]
 
 { #category : 'as yet unclassified' }
-Board >> limitAdjustment: aPosition withTotalLaps: totalLaps [
+Board >> limitAdjustmentAt: aPosition with: totalLaps [
 
 	aPosition position <= 0 ifTrue: [
 		^ Position at: ((aPosition position)negated +1) withLaps: 0 ].
@@ -109,6 +95,12 @@ Board >> limitAdjustment: aPosition withTotalLaps: totalLaps [
 	^ Position
 		  at: boardSize * (aPosition position // boardSize) negated
 		  withLaps: aPosition position // boardSize
+]
+
+{ #category : 'as yet unclassified' }
+Board >> positionAfterWormHole: aPosition [
+
+	^ Position at: (wormHole moveifWormHole: aPosition position) withLaps: 0.
 ]
 
 { #category : 'as yet unclassified' }

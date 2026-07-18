@@ -9,8 +9,8 @@ Class {
 		'laps',
 		'board',
 		'spaceShipPositions',
-		'lastCardEffect',
-		'deck'
+		'deck',
+		'lastCardEffect'
 	],
 	#category : 'IngSoft2-Model',
 	#package : 'IngSoft2-Model'
@@ -55,6 +55,18 @@ Game class >> playedIn: aBoard by: aNumberOfSpaceShips throwing: aDiceSet wonAft
 		
 ]
 
+{ #category : 'adding' }
+Game >> addPermanentEffect: anEffect to: anAffectedShip [
+
+	| targetShips |
+	
+	targetShips :=self getTarget: anAffectedShip.
+	targetShips do: [ :ship | ship apply: anEffect ].
+	
+	lastCardEffect:= anEffect.
+	
+]
+
 { #category : 'as yet unclassified' }
 Game >> affectedRoll: aDiceRoll of:aSpaceShip [
 
@@ -87,6 +99,15 @@ Game >> applyEffect: aCardEffect to: anAffectedShip [
 	targetShips do: [ :ship | ship apply: effectiveCard ].
 
 	lastCardEffect := self updateLastCarEffect: aCardEffect
+]
+
+{ #category : 'as yet unclassified' }
+Game >> applyLastCardEffectFrom: aShip to: anAffectedShip [
+
+	lastCardEffect isBlankCard ifTrue: [
+		Error signal:
+			'Redo Card not Used. No Card Effect Has Been Used Before Redo.' ].
+	lastCardEffect class new applyTo: self from: aShip applyTo: anAffectedShip
 ]
 
 { #category : 'as yet unclassified' }
@@ -130,8 +151,12 @@ Game >> battleBetween: aSpaceShip1 and: aSpaceShip2 [
 
 { #category : 'as yet unclassified' }
 Game >> chooseMercenary: aMercenarySpaceShip for: aSpaceShip [
-
-	(spaceShips at: aSpaceShip) setMercenary: (spaceShips at: aMercenarySpaceShip).
+	
+	| employerShip mercShip |
+	employerShip := spaceShips at: aSpaceShip.
+	mercShip := spaceShips at: aMercenarySpaceShip.
+	(spaceShips  anySatisfy: [ :ship | ship getMercenary anySatisfy:[:contract | contract getAlly = mercShip] ]).
+	employerShip setMercenary: mercShip .
 ]
 
 { #category : 'whats left of race positions' }
@@ -148,6 +173,12 @@ Game >> create: aNumberOfSpaceShips [
 		spaceShips add:
 			(SpaceShip with: id andStartingWith: aShield).
 		spaceShipPositions at: id put: aPosition ]
+]
+
+{ #category : 'as yet unclassified' }
+Game >> drawCardFor: aSpaceShip [
+
+	(spaceShips at: aSpaceShip) drawCard: deck drawRandomCard.
 ]
 
 { #category : 'as yet unclassified' }
@@ -188,29 +219,26 @@ Game >> getTarget: anAffectedShip [
 { #category : 'as yet unclassified' }
 Game >> giveInitialCardsToShips [
 
-	deck isCollection
-		ifTrue: [
-			spaceShips do: [ :ship |
-				deck do: [ :card | ship drawCard: card class new ] ] ]
-		ifFalse: [
-			spaceShips do: [ :ship |
-				2 timesRepeat: [ ship drawCard: deck drawRandomCard ] ] ]
+	spaceShips do: [ :ship |
+		2 timesRepeat: [ ship drawCard: deck drawRandomCard ] ]
 ]
 
 { #category : 'initialization' }
 Game >> initializeWithBoardSize: aBoard by: aNumberOfSpaceShips thorwing: aDiceSet wonAfter: aNumberOfLaps withDeck: aDeck [
 
 	board := aBoard.
-	
+
 	spaceShipPositions := OrderedDictionary new.
 	self create: aNumberOfSpaceShips.
-	
+
 	diceSet := aDiceSet.
 	nextSpaceShipToMove := 1.
 	numberOfSpaceShips := aNumberOfSpaceShips.
 	laps := aNumberOfLaps.
+	deck := aDeck isCollection
+		        ifTrue: [ CardDeck withCards: aDeck ]
+		        ifFalse: [ aDeck ].
 	lastCardEffect := BlankCard new.
-	deck := ( aDeck asOrderedCollection ifEmpty: [ deck := CardDeck new ])  .
 	self giveInitialCardsToShips.
 	^ self
 ]
@@ -279,8 +307,8 @@ Game >> move: aSpaceShip after: aDiceRoll [
 	self sumTo: aSpaceShip the: (Position at: aDiceRollWithEffect withLaps: 0).
 
 	self sumTo: aSpaceShip the: (board
-			 limitAdjustment: (spaceShipPositions at: aSpaceShip id)
-			 withTotalLaps: laps).
+			 limitAdjustmentAt: (spaceShipPositions at: aSpaceShip id)
+			 with: laps).
 
 	board
 		applyEffecOfPowerUpUponA: aSpaceShip
@@ -290,12 +318,12 @@ Game >> move: aSpaceShip after: aDiceRoll [
 	self
 		replacePositionOf: aSpaceShip
 		with:
-		(board checkForWormHole: (spaceShipPositions at: aSpaceShip id)).
+		(board positionAfterWormHole: (spaceShipPositions at: aSpaceShip id)).
 
 	spaceShips do: [ :ship |
 		self sumTo: ship the: (board
-				 limitAdjustment: (spaceShipPositions at: ship id)
-				 withTotalLaps: laps) ].
+				 limitAdjustmentAt: (spaceShipPositions at: ship id)
+				 with: laps) ].
 
 	self lookForBattle: aSpaceShip
 ]
@@ -319,6 +347,21 @@ Game >> obtainOponentShip: aSpaceShip [
 Game >> positionOf: aSpaceShipID [
 
 	^ (spaceShipPositions at: aSpaceShipID) position
+]
+
+{ #category : 'removing' }
+Game >> removePermanentEffect: anEffect [
+
+	spaceShips do: [ :ship | ship removeEffect: anEffect ].
+]
+
+{ #category : 'as yet unclassified' }
+Game >> repeatLastCellEffectOn: anAffectedShip [
+
+	board
+		applyLastEffectPowerUpUponA: (spaceShips at: anAffectedShip)
+		andAll: spaceShips
+		andIts: spaceShipPositions
 ]
 
 { #category : 'as yet unclassified' }
@@ -388,7 +431,7 @@ Game >> useCard: aCardEffect from: aShip applyTo: affectedShip [
 	((spaceShips at: aShip) checkForCard: aCardEffect) ifFalse: [
 		Error signal: 'Card is not in ship hand' ].
 
-	self applyEffect: aCardEffect to: affectedShip.
+	aCardEffect applyTo: self from: aShip  applyTo: affectedShip .
 
 	aCardEffect isApplicable ifTrue: [
 		(spaceShips at: aShip) removeCardFromDeck: aCardEffect ]

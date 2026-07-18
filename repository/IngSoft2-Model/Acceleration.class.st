@@ -1,6 +1,6 @@
 Class {
 	#name : 'Acceleration',
-	#superclass : 'PermanentCard',
+	#superclass : 'Card',
 	#category : 'IngSoft2-Model',
 	#package : 'IngSoft2-Model'
 }
@@ -9,4 +9,10 @@ Class {
 Acceleration >> affectsMovement [
 
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+Acceleration >> applyTo: aGame from: aShip applyTo: aTarget [
+
+	aGame addPermanentEffect: self to: 0
 ]

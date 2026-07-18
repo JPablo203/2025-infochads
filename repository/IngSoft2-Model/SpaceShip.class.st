@@ -38,11 +38,7 @@ SpaceShip class >> with: anId andStartingWith: aShield [
 { #category : 'target resize' }
 SpaceShip >> apply: aCardEffect [
 
-	((self redoCardEffect: aCardEffect) or:
-		 (self cancellationCardEffect: aCardEffect)) ifTrue: [ ^ self ].
-
-
-	aCardEffect isPermanent ifTrue: [ effects add: aCardEffect ]
+	effects add: aCardEffect 
 ]
 
 { #category : 'testing' }
@@ -156,6 +152,19 @@ SpaceShip >> removeCardFromDeck: aCardEffect [
 	hand remove:aCardToRemove
 ]
 
+{ #category : 'target resize' }
+SpaceShip >> removeEffect: aCardEffect [
+
+	| effectToRemove |
+	effectToRemove := effects
+		                  detect: [ :each | each = aCardEffect ]
+		                  ifNone: [
+			                  Error signal:
+				                  'There is no Permanent effect active, Cancelleation Card not Used.' ].
+
+	effects remove: effectToRemove
+]
+
 { #category : 'as yet unclassified' }
 SpaceShip >> searchForIncrementalEffect [
 
@@ -169,7 +178,7 @@ SpaceShip >> searchForIncrementalEffect [
 SpaceShip >> setMercenary: aMercenarySpaceShip [
 
 	effects do: [ :effect |
-		(effect isMercenary and: [ effect hasNoMercenary ]) ifTrue: [
+		(effect hasNoMercenary) ifTrue: [
 			effect signContract: aMercenarySpaceShip.
 
 			^ self ] ]
