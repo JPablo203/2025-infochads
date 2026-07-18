@@ -121,6 +121,16 @@ Game >> applyRepeat: anAffectedShip to: aCardEffect [
 ]
 
 { #category : 'as yet unclassified' }
+Game >> applyReversePolarityOfCell: aCellIndex [
+	
+	board reversePolarityAt: aCellIndex.
+	
+	
+	
+	
+]
+
+{ #category : 'as yet unclassified' }
 Game >> battleBetween: aSpaceShip1 and: aSpaceShip2 [
 
 	| throwSpaceShip1 throwSpaceShip2 winner loser  throwMercenary2 throwMercenary1|
@@ -426,12 +436,12 @@ Game >> updateNextShipToMove: spaceShipID [
 ]
 
 { #category : 'as yet unclassified' }
-Game >> useCard: aCardEffect from: aShip applyTo: affectedShip [
+Game >> useCard: aCardEffect from: aShip applyTo: affectedShipOrCellIndex [
 
 	((spaceShips at: aShip) checkForCard: aCardEffect) ifFalse: [
 		Error signal: 'Card is not in ship hand' ].
 
-	aCardEffect applyTo: self from: aShip  applyTo: affectedShip .
+	aCardEffect applyTo: self from: aShip  applyTo: affectedShipOrCellIndex .
 
 	aCardEffect isApplicable ifTrue: [
 		(spaceShips at: aShip) removeCardFromDeck: aCardEffect ]

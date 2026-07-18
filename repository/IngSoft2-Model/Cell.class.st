@@ -71,12 +71,13 @@ Cell >> initializeWithA: anEffect [
 { #category : 'as yet unclassified' }
 Cell >> takeActionOver: aSpaceShip or: spaceShips thatArePlaced: spaceShipPositions [
 
-	self affectOnly: aSpaceShip thatIsPlacedIn: spaceShipPositions.
-	self giveCardToShip: aSpaceShip.
+	self affectOnly: aSpaceShip thatIsPlacedIn: spaceShipPositions. "BH,HP,HSP"
+	self giveCardToShip: aSpaceShip. "CG"
 	self
 		dontAffect: aSpaceShip
 		butInstedAffectAll: spaceShips
 		thatArePlacedIn: spaceShipPositions.
+	"AtmB,"
 
 	self affectTheShieldOf: aSpaceShip.
 

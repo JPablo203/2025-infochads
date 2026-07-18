@@ -34,3 +34,9 @@ Effect >> giveCardToShip [
 
 	^ self
 ]
+
+{ #category : 'testing' }
+Effect >> isGlobal [
+
+	^ false
+]

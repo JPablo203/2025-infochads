@@ -48,3 +48,9 @@ AtomicBombEffect >> initializedWith: aDesplacement [
 
 	desplacement := aDesplacement
 ]
+
+{ #category : 'testing' }
+AtomicBombEffect >> isGlobal [
+
+	^ true
+]

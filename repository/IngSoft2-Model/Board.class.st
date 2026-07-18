@@ -103,6 +103,14 @@ Board >> positionAfterWormHole: aPosition [
 	^ Position at: (wormHole moveifWormHole: aPosition position) withLaps: 0.
 ]
 
+{ #category : 'accessing' }
+Board >> reversePolarityAt: aCellIndex [
+
+	| targetCell |
+	targetCell := gameBoard at: aCellIndex.
+	gameBoard at:aCellIndex put:(CellReversed wrapping: targetCell ).
+]
+
 { #category : 'as yet unclassified' }
 Board >> the: aPosition hasReached: totalLaps [
 
