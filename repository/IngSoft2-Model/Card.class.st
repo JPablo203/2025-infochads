@@ -14,7 +14,7 @@ Class {
 { #category : 'as yet unclassified' }
 Card >> affectsMovement [
 
-	^ false
+	^ 0
 ]
 
 { #category : 'as yet unclassified' }
@@ -39,4 +39,28 @@ Card >> isApplicable [
 Card >> isBlankCard [
 
 	^ false
+]
+
+{ #category : 'testing' }
+Card >> isReverse [
+
+	^ false
+]
+
+{ #category : 'as yet unclassified' }
+Card >> originalCard [
+
+	^ self
+]
+
+{ #category : 'converting' }
+Card >> reversed [
+
+	^ Reversal reversing: self
+]
+
+{ #category : 'as yet unclassified' }
+Card >> targetIndexBasedOn: aTargetIndex [
+
+	^ aTargetIndex
 ]

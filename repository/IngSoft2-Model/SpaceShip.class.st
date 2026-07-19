@@ -82,6 +82,12 @@ SpaceShip >> getShipDeck [
 ]
 
 { #category : 'testing' }
+SpaceShip >> hasBeenApplied: anEffect [
+
+	^ effects anySatisfy: [ :effect | effect = anEffect ]
+]
+
+{ #category : 'testing' }
 SpaceShip >> hasMercenary [
 
 	^ (self getMercenary) notEmpty
@@ -132,7 +138,7 @@ SpaceShip >> removeEffect: aCardEffect [
 
 	| effectToRemove |
 	effectToRemove := effects
-		                  detect: [ :each | each = aCardEffect ]
+		                  detect: [ :each | each originalCard == aCardEffect originalCard ]
 		                  ifNone: [
 			                  Error signal:
 				                  'There is no Permanent effect active, Cancelleation Card not Used.' ].
@@ -141,10 +147,21 @@ SpaceShip >> removeEffect: aCardEffect [
 ]
 
 { #category : 'as yet unclassified' }
+SpaceShip >> reverseEffect: anEffectToReverse [
+
+	| oldEffect reversedEffect |
+	oldEffect := effects detect: [ :effect | effect = anEffectToReverse ].
+
+	reversedEffect := oldEffect reversed.
+	effects remove: oldEffect.
+	effects add: reversedEffect
+]
+
+{ #category : 'as yet unclassified' }
 SpaceShip >> searchForIncrementalEffect [
 
 	| incrementalEffects |
-	incrementalEffects := effects count: [ :anEffect | anEffect affectsMovement  ].
+	incrementalEffects := effects inject: 0 into:[:total :anEffect | total + anEffect affectsMovement].
 
 	^ incrementalEffects
 ]

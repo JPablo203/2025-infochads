@@ -8,7 +8,7 @@ Class {
 { #category : 'as yet unclassified' }
 Speed >> affectsMovement [
 
-	^ true
+	^ 1
 ]
 
 { #category : 'as yet unclassified' }

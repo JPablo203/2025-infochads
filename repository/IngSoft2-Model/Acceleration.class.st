@@ -8,11 +8,17 @@ Class {
 { #category : 'as yet unclassified' }
 Acceleration >> affectsMovement [
 
-	^ true
+	^ 1
 ]
 
 { #category : 'as yet unclassified' }
 Acceleration >> applyTo: aGame from: aShip applyTo: aTarget [
 
 	aGame addPermanentEffect: self to: 0
+]
+
+{ #category : 'as yet unclassified' }
+Acceleration >> targetIndexBasedOn: aTargetIndex [
+
+	^ 0
 ]

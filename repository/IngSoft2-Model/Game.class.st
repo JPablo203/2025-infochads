@@ -362,6 +362,26 @@ Game >> replacePositionOf: aSpaceShip with: aPosition [
 			 aPosition)
 ]
 
+{ #category : 'as yet unclassified' }
+Game >> reversePermanentEffect: anEffect from: aShipIndex [
+
+	| effectApplied |
+	effectApplied := aShipIndex = 0
+		                 ifTrue: [
+		                 spaceShips anySatisfy: [ :ship |
+			                 ship hasBeenApplied: anEffect ] ]
+		                 ifFalse: [
+		                 (spaceShips at: aShipIndex) hasBeenApplied:
+			                 anEffect ].
+
+	effectApplied ifFalse: [
+		Error signal:
+			'Cannot use Reversal: The targeted permanent effect is not active on the selected Ship/s.' ].
+	aShipIndex = 0
+		ifTrue: [ spaceShips do: [ :ship | ship reverseEffect: anEffect ] ]
+		ifFalse: [ (spaceShips at: aShipIndex) reverseEffect: anEffect ]
+]
+
 { #category : 'informationTest' }
 Game >> shieldOf: aSpaceShipID [
 
