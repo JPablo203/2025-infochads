@@ -11,13 +11,7 @@ Class {
 { #category : 'as yet unclassified' }
 Cancellation >> applyTo: aGame from: aShip applyTo: aTarget [
 
-	aGame removePermanentEffect: removedEffect
-]
-
-{ #category : 'testing' }
-Cancellation >> canBePlayedAtAnyMoment [
-
-	^ true
+	aGame removePermanentEffect: removedEffect from: aTarget
 ]
 
 { #category : 'as yet unclassified' }
@@ -30,10 +24,4 @@ Cancellation >> effectTypeToCancel: effectToRemove [
 Cancellation >> getEffect [
 
 	^ removedEffect
-]
-
-{ #category : 'testing' }
-Cancellation >> isCancellation [
-
-	^ true
 ]

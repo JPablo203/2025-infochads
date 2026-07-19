@@ -47,22 +47,6 @@ SpaceShip >> canBattle [
 	^ shield > 0 and: loseTurn = 0
 ]
 
-{ #category : 'target resize' }
-SpaceShip >> cancellationCardEffect: aCardEffect [
-
-	| effectToRemove |
-	aCardEffect isCancellation ifFalse: [ ^ false ].
-	effectToRemove := effects
-		                  detect: [ :each | each = aCardEffect getEffect ]
-		                  ifNone: [
-			                  aCardEffect isApplicable: false.
-			                  Error signal:
-				                  'There is no Permanent effect active, Cancelleation Card not Used.' ].
-
-	effects remove: effectToRemove.
-	^ true
-]
-
 { #category : 'as yet unclassified' }
 SpaceShip >> checkForCard: aCardEffect [
 	
@@ -133,15 +117,6 @@ SpaceShip >> rechargableShield: aDiceRoll [
 	(shield = 3 and: aDiceRoll = 0) ifTrue: [
 		Error signal: 
 			'The Shield is already full, it cant be recharged.' ]
-]
-
-{ #category : 'target resize' }
-SpaceShip >> redoCardEffect: aCardEffect [
-
-	aCardEffect isRedo ifTrue: [
-		effects add: (aCardEffect getLastCardEffect).
-		^ true ].
-	^ false
 ]
 
 { #category : 'removing' }

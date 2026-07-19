@@ -10,9 +10,3 @@ Repeat >> applyTo: aGame from: aShip applyTo: aTarget [
 
 	aGame repeatLastCellEffectOn: aTarget
 ]
-
-{ #category : 'testing' }
-Repeat >> canBePlayedAtAnyMoment [
-
-	^ true
-]

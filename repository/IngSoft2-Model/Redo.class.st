@@ -15,9 +15,9 @@ Redo >> applyTo: aGame from: aShip applyTo: aTarget [
 ]
 
 { #category : 'testing' }
-Redo >> canBePlayedAtAnyMoment [
+Redo >> canBeRecordedAsLastEffect [
 
-	^ true
+	^ false
 ]
 
 { #category : 'accessing' }

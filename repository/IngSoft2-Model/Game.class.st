@@ -61,10 +61,7 @@ Game >> addPermanentEffect: anEffect to: anAffectedShip [
 	| targetShips |
 	
 	targetShips :=self getTarget: anAffectedShip.
-	targetShips do: [ :ship | ship apply: anEffect ].
-	
-	lastCardEffect:= anEffect.
-	
+	targetShips do: [ :ship | ship apply: anEffect ].	
 ]
 
 { #category : 'as yet unclassified' }
@@ -85,39 +82,12 @@ Game >> applyBattleResultWithLoser: aLoser [
 ]
 
 { #category : 'as yet unclassified' }
-Game >> applyEffect: aCardEffect to: anAffectedShip [
-
-	| effectiveCard targetShips |
-	self validateRedo: aCardEffect.
-
-	effectiveCard := aCardEffect resolveCardWith: lastCardEffect.
-
-	self applyRepeat: anAffectedShip to: aCardEffect.
-
-	targetShips := self getTarget: anAffectedShip.
-
-	targetShips do: [ :ship | ship apply: effectiveCard ].
-
-	lastCardEffect := self updateLastCarEffect: aCardEffect
-]
-
-{ #category : 'as yet unclassified' }
 Game >> applyLastCardEffectFrom: aShip to: anAffectedShip [
 
 	lastCardEffect isBlankCard ifTrue: [
 		Error signal:
 			'Redo Card not Used. No Card Effect Has Been Used Before Redo.' ].
-	lastCardEffect class new applyTo: self from: aShip applyTo: anAffectedShip
-]
-
-{ #category : 'as yet unclassified' }
-Game >> applyRepeat: anAffectedShip to: aCardEffect [
-
-	aCardEffect isRepeat ifTrue: [
-		board
-			applyLastEffectPowerUpUponA: (spaceShips at: anAffectedShip)
-			andAll: spaceShips
-			andIts: spaceShipPositions ]
+	lastCardEffect applyTo: self from: aShip applyTo: anAffectedShip
 ]
 
 { #category : 'as yet unclassified' }
@@ -195,6 +165,12 @@ Game >> drawCardFor: aSpaceShip [
 Game >> getCardDeckSizeOf: aShip [
 
 	^ (spaceShips at: aShip) getShipDeck 
+]
+
+{ #category : 'as yet unclassified' }
+Game >> getMercenaryAmountFrom: aShipId [
+
+	^ (spaceShips at: aShipId) getMercenary size
 ]
 
 { #category : 'informationTest' }
@@ -360,9 +336,11 @@ Game >> positionOf: aSpaceShipID [
 ]
 
 { #category : 'removing' }
-Game >> removePermanentEffect: anEffect [
+Game >> removePermanentEffect: anEffect from: aShipIndex [
 
-	spaceShips do: [ :ship | ship removeEffect: anEffect ].
+	aShipIndex = 0
+		ifTrue: [ spaceShips do: [ :ship | ship removeEffect: anEffect ] ]
+		ifFalse: [ (spaceShips at: aShipIndex) removeEffect: anEffect ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -420,14 +398,6 @@ Game >> sumTo: aSpaceShip the: aPosition [
 ]
 
 { #category : 'as yet unclassified' }
-Game >> updateLastCarEffect: aCardEffect [
-
-	^ aCardEffect isRedo
-		  ifFalse: [ aCardEffect ]
-		  ifTrue: [ lastCardEffect ]
-]
-
-{ #category : 'as yet unclassified' }
 Game >> updateNextShipToMove: spaceShipID [
 
 	nextSpaceShipToMove := spaceShipID + 1.
@@ -441,17 +411,13 @@ Game >> useCard: aCardEffect from: aShip applyTo: affectedShipOrCellIndex [
 	((spaceShips at: aShip) checkForCard: aCardEffect) ifFalse: [
 		Error signal: 'Card is not in ship hand' ].
 
-	aCardEffect applyTo: self from: aShip  applyTo: affectedShipOrCellIndex .
+	aCardEffect
+		applyTo: self
+		from: aShip
+		applyTo: affectedShipOrCellIndex.
 
 	aCardEffect isApplicable ifTrue: [
-		(spaceShips at: aShip) removeCardFromDeck: aCardEffect ]
-]
-
-{ #category : 'as yet unclassified' }
-Game >> validateRedo: aCardEffect [
-
-	(lastCardEffect isBlankCard and: aCardEffect isRedo) ifFalse: [ ^ self ].
-	aCardEffect isApplicable: false.
-	Error signal:
-		'Redo Card not Used. No Card Effect Has Been Used Before Redo.'
+		(spaceShips at: aShip) removeCardFromDeck: aCardEffect ].
+	aCardEffect canBeRecordedAsLastEffect ifTrue: [
+		lastCardEffect := aCardEffect ]
 ]
