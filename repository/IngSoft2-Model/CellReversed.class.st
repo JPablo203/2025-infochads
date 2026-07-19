@@ -36,4 +36,5 @@ CellReversed >> takeActionOver: aSpaceShip or: spaceShips thatArePlaced: spaceSh
 			originalCell affectOnly: ship thatIsPlacedIn: spaceShipPositions.
 			originalCell giveCardToShip: ship.
 			originalCell affectTheShieldOf: ship ] ]
+	
 ]

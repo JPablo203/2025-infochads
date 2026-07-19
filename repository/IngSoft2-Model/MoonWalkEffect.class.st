@@ -36,3 +36,9 @@ MoonWalkEffect >> initializeWith: aDisplacement [
 
 	desplacement := aDisplacement
 ]
+
+{ #category : 'testing' }
+MoonWalkEffect >> isGlobal [
+
+	^ true
+]
