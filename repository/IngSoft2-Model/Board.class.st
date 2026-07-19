@@ -106,9 +106,10 @@ Board >> positionAfterWormHole: aPosition [
 { #category : 'accessing' }
 Board >> reversePolarityAt: aCellIndex [
 
-	| targetCell |
+	| targetCell updatedCell |
 	targetCell := gameBoard at: aCellIndex.
-	gameBoard at:aCellIndex put:(CellReversed wrapping: targetCell ).
+	updatedCell := targetCell reversed.
+	gameBoard at:aCellIndex put: updatedCell.
 ]
 
 { #category : 'as yet unclassified' }

@@ -26,6 +26,12 @@ CellReversed >> originalCell [
 	^ originalCell
 ]
 
+{ #category : 'converting' }
+CellReversed >> reversed [
+
+	^ originalCell
+]
+
 { #category : 'as yet unclassified' }
 CellReversed >> takeActionOver: aSpaceShip or: spaceShips thatArePlaced: spaceShipPositions [
 

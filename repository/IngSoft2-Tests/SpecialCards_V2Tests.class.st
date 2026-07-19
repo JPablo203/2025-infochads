@@ -32,6 +32,184 @@ SpecialCards_V2Tests >> testWhenCardReversePolarityIsApplyToAtomicBombCellThenSh
 ]
 
 { #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReverseCardDobleAppliedOnTheSameCellThenEffectIsTheOrginalAndNotReversedEffectAtomicBombCell [
+
+	| aGame aDiceSet aBoard aConfigureDiceSet |
+	aDiceSet := RiggedDice new initializeWith: { 4 }.
+	aConfigureDiceSet := RiggedDice new initializeWith:
+		                     { 0. 0. 0. 0. 100. 0. 0. 100. 0. 3. 30. 20. 10.
+		                     6. 4. 2. 5. 7 }.
+	aBoard := Board
+		          withSize: 50
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: aConfigureDiceSet.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: {
+				         ReversePolarity new.
+				         ReversePolarity new }.
+
+	aGame useCard: ReversePolarity new from: 1 applyTo: 5. "En el apply el num representa el numero de casillero"
+	aGame useCard: ReversePolarity new from: 1 applyTo: 5.
+	aGame start.
+
+	self assert: (aGame shieldOf: 1) equals: 2.
+	self assert: (aGame shieldOf: 2) equals: 2.
+	self assert: (aGame shieldOf: 3) equals: 2.
+	self assert: (aGame positionOf: 1) equals: 1.
+	self assert: (aGame positionOf: 2) equals: 1.
+	self assert: (aGame positionOf: 3) equals: 1
+]
+
+{ #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReverseCardDobleAppliedOnTheSameCellThenEffectIsTheOrginalAndNotReversedEffectBlackHole [
+
+	| aGame aDiceSet aBoard aConfigureDiceSet |
+	aDiceSet := RiggedDice new initializeWith: { 10 }.
+	aConfigureDiceSet := RiggedDice new initializeWith:
+		                     { 0. 100. 0. 0. 0. 0. 0. 100. 0. 3. 30. 20. 10.
+		                     6. 4. 2. 5. 7 }.
+	aBoard := Board
+		          withSize: 50
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: aConfigureDiceSet.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: {
+				         ReversePolarity new.
+				         ReversePolarity new }.
+
+	aGame useCard: ReversePolarity new from: 1 applyTo: 10. "En el apply el num representa el numero de casillero"
+	aGame useCard: ReversePolarity new from: 1 applyTo: 10.
+	aGame start.
+
+	self assert: (aGame positionOf: 1) equals: 7.
+	self assert: (aGame positionOf: 2) equals: 1.
+	self assert: (aGame positionOf: 3) equals: 1
+]
+
+{ #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReverseCardDobleAppliedOnTheSameCellThenEffectIsTheOrginalAndNotReversedEffectCardGiver [
+
+	| aGame aDiceSet aBoard aConfigureDiceSet |
+	aDiceSet := RiggedDice new initializeWith: { 10 }.
+	aConfigureDiceSet := RiggedDice new initializeWith:
+		                     { 0. 0. 0. 0. 0. 0. 100. 100. 0. 3. 30. 20. 10. 6.
+		                     4. 2. 5. 7 }.
+	aBoard := Board
+		          withSize: 50
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: aConfigureDiceSet.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: { ReversePolarity new.  ReversePolarity new}.
+
+	aGame useCard: ReversePolarity new from: 1 applyTo: 10. "En el apply el num representa el numero de casillero"
+	aGame useCard: ReversePolarity new from: 1 applyTo: 10.
+	aGame start.
+
+	self assert: (aGame getCardDeckSizeOf: 1) equals: 1.
+	
+]
+
+{ #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReverseCardDobleAppliedOnTheSameCellThenEffectIsTheOrginalAndNotReversedEffectHyperJump [
+
+	| aGame aDiceSet aBoard aConfigureDiceSet |
+	aDiceSet := RiggedDice new initializeWith: { 10 }.
+	aConfigureDiceSet := RiggedDice new initializeWith:
+		                     { 0. 0. 0. 100. 0. 0. 0. 100. 0. 3. 30. 20. 10.
+		                     6. 4. 2. 5. 7 }.
+	aBoard := Board
+		          withSize: 100
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: aConfigureDiceSet.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: { ReversePolarity new.  ReversePolarity new}.
+
+	aGame useCard: ReversePolarity new from: 1 applyTo: 11. "En el apply el num representa el numero de casillero"
+	aGame useCard: ReversePolarity new from: 1 applyTo: 11.
+	aGame start.
+
+	self assert: (aGame positionOf: 1) equals: 41.	
+	self assert: (aGame positionOf: 2) equals:1.
+]
+
+{ #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReverseCardDobleAppliedOnTheSameCellThenEffectIsTheOrginalAndNotReversedEffectHyperSpaceJump [
+
+	| aGame aDiceSet aBoard aConfigureDiceSet |
+	aDiceSet := RiggedDice new initializeWith: { 10 }.
+	aConfigureDiceSet := RiggedDice new initializeWith:
+		                     { 0. 0. 100. 0. 0. 0. 0. 100. 0. 3. 30. 20. 10.
+		                     6. 4. 2. 5. 7 }.
+	aBoard := Board
+		          withSize: 100
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: aConfigureDiceSet.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: {
+				         ReversePolarity new.
+				         ReversePolarity new }.
+
+	aGame useCard: ReversePolarity new from: 1 applyTo: 11. "En el apply el num representa el numero de casillero"
+	aGame useCard: ReversePolarity new from: 1 applyTo: 11.
+	aGame start.
+
+	self assert: (aGame positionOf: 1) equals: 15.
+	self assert: (aGame shieldOf: 1) equals: 2.
+	self assert: (aGame positionOf: 2) equals: 1.
+	self assert: (aGame shieldOf: 2) equals: 3.
+]
+
+{ #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReverseCardDobleAppliedOnTheSameCellThenEffectIsTheOrginalAndNotReversedEffectMoonWalk [
+
+	| aGame aDiceSet aBoard aConfigureDiceSet |
+	aDiceSet := RiggedDice new initializeWith: { 10. 11. 5}.
+	aConfigureDiceSet := RiggedDice new initializeWith:
+		                     { 0. 0. 0. 0. 0. 100. 0. 100. 0. 3. 30. 20. 10.
+		                     4. 4. 4. 4. 4. 0 }.
+	aBoard := Board
+		          withSize: 50
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: aConfigureDiceSet.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: {
+				         ReversePolarity new.
+				         ReversePolarity new }.
+
+	aGame useCard: ReversePolarity new from: 1 applyTo: 6. "En el apply el num representa el numero de casillero"
+	aGame useCard: ReversePolarity new from: 1 applyTo: 6.
+	aGame start.
+
+	self assert: (aGame positionOf: 1) equals: 3.
+	self assert: (aGame positionOf: 2) equals: 8.
+	self assert: (aGame positionOf: 3) equals: 6
+]
+
+{ #category : 'tests' }
 SpecialCards_V2Tests >> testWhenReversePolarityCardAppliedToBlackHoleCellAffectsAllOtherShipsExceptTheOneOnTheBlackHoleCell [
 
 	| aGame aDiceSet aBoard aConfigureDiceSet |
@@ -141,6 +319,38 @@ SpecialCards_V2Tests >> testWhenReversePolarityCardIsAppliedOnAHyperJumpCellThen
 	self assert: (aGame positionOf: 1) equals: 41.
 	self assert: (aGame positionOf: 2) equals: 31.
 	self assert: (aGame positionOf: 3) equals: 21.
+]
+
+{ #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReversePolarityCardIsAppliedOnANoEffectCellThenNothingHappens [
+
+	| aGame aDiceSet aBoard aConfigureDiceSet |
+	aDiceSet := RiggedDice new initializeWith: { 40. 10. 5 }.
+	aConfigureDiceSet := RiggedDice new initializeWith:
+		                     { 100. 0. 0. 0. 0. 0. 0. 100. 0. 3. 30. 20. 10.
+		                     6. 4. 2. 5. 7 }.
+	aBoard := Board
+		          withSize: 100
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: aConfigureDiceSet.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: { ReversePolarity new }.
+
+	aGame useCard: ReversePolarity new from: 1 applyTo: 41. "En el apply el num representa el numero de casillero"
+
+	aGame start.
+	
+	self assert: (aGame positionOf: 1) equals: 41.
+	self assert: (aGame positionOf: 2) equals: 11.
+	self assert: (aGame positionOf: 3) equals: 6. 
+	self assert: (aGame getCardDeckSizeOf: 1) equals:1.
+	"Dejo que la carta se pueda aplicar en una posible Interacion del proyecto las celdas puedan mutar y el jugador quiere plantar el reverse para afectar a los demas o beneficiarse"
+	
+
 ]
 
 { #category : 'tests' }

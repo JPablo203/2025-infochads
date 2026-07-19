@@ -68,6 +68,12 @@ Cell >> initializeWithA: anEffect [
 	effect := anEffect
 ]
 
+{ #category : 'converting' }
+Cell >> reversed [
+
+	^ CellReversed wrapping: self
+]
+
 { #category : 'as yet unclassified' }
 Cell >> takeActionOver: aSpaceShip or: spaceShips thatArePlaced: spaceShipPositions [
 
