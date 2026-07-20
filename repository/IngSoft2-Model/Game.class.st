@@ -279,7 +279,7 @@ Game >> mercenaryThrowsFor: aSpaceShip [
 	| totalThrow |
 	totalThrow := 0.
 	aSpaceShip getMercenary do: [ :mercenary |
-		totalThrow := totalThrow + diceSet toss ].
+		totalThrow := mercenary modifyThrow: totalThrow using: diceSet ].
 	^ totalThrow
 ]
 

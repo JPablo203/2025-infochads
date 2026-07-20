@@ -42,6 +42,12 @@ Card >> isBlankCard [
 ]
 
 { #category : 'testing' }
+Card >> isMercenary [
+
+	^ false
+]
+
+{ #category : 'testing' }
 Card >> isReverse [
 
 	^ false

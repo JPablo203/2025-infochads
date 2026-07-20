@@ -176,6 +176,75 @@ SpecialCards_V2Tests >> testWhenReversalCardIsAppliedToAccelerationCardThenShips
 ]
 
 { #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReversalCardIsAppliedToMercenaryCardDuringCombatMercenaryReducesTotalThrowThusMakingShip1Lose [
+
+	| aGame aDiceSet aBoard reversalCard mercenaryCard |
+	aDiceSet := RiggedDice new initializeWith: { 5. 5. 5. 2. 4 }.
+	aBoard := Board
+		          withSize: 100
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: {  }.
+	mercenaryCard := Mercenary new.
+	reversalCard := Reversal reversing: mercenaryCard.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 3
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: {
+				         mercenaryCard.Speed.
+				         reversalCard }.
+
+	aGame useCard: mercenaryCard from: 1 applyTo: 1.
+	aGame chooseMercenary: 3 for: 1.
+	aGame useCard: reversalCard from: 2 applyTo: 1.
+
+	aGame start.
+	"La forma en que reversal funciona sobre mercenary es el reducir el totalThrow en vez de aumentar. Considero que para esta carta al aplicarla la nave mercenaria es hipontizada para perjudicar al empleado para que pierda. Al estar hipnotizado y estar ligados por el contrato ambos pierden escudo en el caso de que pierdan el combate. (Enunciado solo dice que ayuda al contrincante, no que no se ve afectada por su funcion original al momento de aplicar la carta )"
+	
+	self assert: (aGame shieldOf: 1) equals:2.
+	self assert: (aGame shieldOf: 3) equals:2.	
+
+]
+
+{ #category : 'tests' }
+SpecialCards_V2Tests >> testWhenReversalCardIsAppliedToMercenaryCardForTwoShipsDuringCombatMercenariesReducesTotalThrowThusMakingShip1Lose [
+
+	| aGame aDiceSet aBoard reversalCard mercenaryCard mercenaryCard1 reversalCard1 |
+	aDiceSet := RiggedDice new initializeWith: { 5. 5. 3. 4. 4. 1}.
+	aBoard := Board
+		          withSize: 100
+		          composedOf: (WormHole startingAt: 1 endingAt: 1)
+		          andACellConfiguration: {  }.
+	mercenaryCard := Mercenary new.
+	mercenaryCard1 := Mercenary new.
+	reversalCard := Reversal reversing: mercenaryCard.
+	reversalCard1 := Reversal reversing: mercenaryCard1.
+	aGame := Game
+		         playedIn: aBoard
+		         by: 4
+		         throwing: aDiceSet
+		         wonAfter: 1
+		         withDeck: {
+				         mercenaryCard.reversalCard1 .
+				         reversalCard. mercenaryCard1 }.
+
+	aGame useCard: mercenaryCard from: 1 applyTo: 1.
+	aGame chooseMercenary: 3 for: 1.
+	aGame useCard: mercenaryCard1 from: 2 applyTo: 2.
+	aGame chooseMercenary: 4 for: 2.
+	aGame useCard: reversalCard from: 2 applyTo: 1.
+	aGame useCard: reversalCard1 from: 1 applyTo: 2.
+
+	aGame start.
+	"La forma en que reversal funciona sobre mercenary es el reducir el totalThrow en vez de aumentar. Considero que para esta carta al aplicarla la nave mercenaria es hipontizada para perjudicar al empleado para que pierda. Al estar hipnotizado y estar ligados por el contrato ambos pierden escudo en el caso de que pierdan el combate. (Enunciado solo dice que ayuda al contrincante, no que no se ve afectada por su funcion original al momento de aplicar la carta )"
+	
+	self assert: (aGame shieldOf: 1) equals:2.
+	self assert: (aGame shieldOf: 3) equals:2.	
+
+]
+
+{ #category : 'tests' }
 SpecialCards_V2Tests >> testWhenReversalCardIsAppliedToSpeedCardAffectedByReversalThenShipMovesWithSpeedIncrement [
 
 	| aGame aDiceSet aBoard speedCard reversalCard |
@@ -246,11 +315,14 @@ SpecialCards_V2Tests >> testWhenReversalCardIsAppliedToSpeedCardThenShipGoesoneC
 		         by: 2
 		         throwing: aDiceSet
 		         wonAfter: 1
-		         withDeck: { speedCard. speedCard .reversalCard }.
+		         withDeck: {
+				         speedCard.
+				         speedCard.
+				         reversalCard }.
 
 	aGame useCard: speedCard from: 1 applyTo: 1.
-	aGame useCard: reversalCard from: 2 applyTo:1.
-	
+	aGame useCard: reversalCard from: 2 applyTo: 1.
+
 	aGame start.
 
 	self assert: (aGame positionOf: 1) equals: 2

@@ -41,6 +41,12 @@ Reversal >> applyTo: aGame from: aShip applyTo: aTarget [
 	aGame reversePermanentEffect: targetEffect from: trueTarget
 ]
 
+{ #category : 'as yet unclassified' }
+Reversal >> getAlly [
+
+	^ targetEffect getAlly
+]
+
 { #category : 'initialization' }
 Reversal >> initializeWith: aCardEffect [
 
@@ -48,9 +54,21 @@ Reversal >> initializeWith: aCardEffect [
 ]
 
 { #category : 'testing' }
+Reversal >> isMercenary [
+
+	^ targetEffect isMercenary
+]
+
+{ #category : 'testing' }
 Reversal >> isReverse [
 
 	^ true
+]
+
+{ #category : 'as yet unclassified' }
+Reversal >> modifyThrow: aTotalThrow using: aDiceSet [
+
+	^ aTotalThrow - aDiceSet toss
 ]
 
 { #category : 'as yet unclassified' }

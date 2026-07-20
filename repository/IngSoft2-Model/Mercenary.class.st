@@ -33,6 +33,12 @@ Mercenary >> isMercenary [
 ]
 
 { #category : 'as yet unclassified' }
+Mercenary >> modifyThrow: aTotalThrow using: aDiceSet [
+
+	^ aTotalThrow + aDiceSet toss
+]
+
+{ #category : 'as yet unclassified' }
 Mercenary >> signContract: aMercenarySpaceShip [
 
 	ally := aMercenarySpaceShip
